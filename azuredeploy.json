@@ -28,11 +28,11 @@
     }
   },
   "variables": {
-    "adModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/active-directory-new-domain/CreateADPDC.ps1.zip",
+    "adModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.ps1.zip",
     "adConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
-    "fswModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateFileShareWitness.ps1.zip",
+    "fswModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.ps1.zip",
     "fswConfigurationFunction": "CreateFileShareWitness.ps1\\CreateFileShareWitness",
-    "sqlAOPrepareModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/PrepareAlwaysOnSqlServer.ps1.zip",
+    "sqlAOPrepareModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.ps1.zip",
     "sqlAOPrepareConfigurationFunction": "PrepareAlwaysOnSqlServer.ps1\\PrepareAlwaysOnSqlServer",
     "createClusterModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateFailoverCluster.ps1.zip",
     "createClusterConfigurationFunction": "CreateFailoverCluster.ps1\\CreateFailoverCluster",
