@@ -577,7 +577,8 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]",
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('vm_dc01'))]"
       ],
       "resources": [
         {
