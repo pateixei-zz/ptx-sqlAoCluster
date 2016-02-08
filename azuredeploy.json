@@ -32,8 +32,6 @@
         "CreateFileShareWitnessTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
         "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.json",
         
-        "sqlAOPrepareModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.ps1.zip",
-        "sqlAOPrepareConfigurationFunction": "PrepareAlwaysOnSqlServer.ps1\\PrepareAlwaysOnSqlServer",
         "createClusterModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateFailoverCluster.ps1.zip",
         "createClusterConfigurationFunction": "CreateFailoverCluster.ps1\\CreateFailoverCluster",
         "avSets_sql": "[concat(parameters('resourcesPrefix'),'-sql')]",
