@@ -540,8 +540,7 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines', variables('vm_dc01'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]"
             ]
         },
         {
@@ -899,7 +898,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]"
+                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]",
+                "[resourceId('Microsoft.Resources/Deployments','CreateFileShareWitness')]"
             ],
             "properties": {
                 "mode": "Incremental",

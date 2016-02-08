@@ -34,9 +34,6 @@
             "name": "[concat(variables('vm_sql01'),'/sqlAOPrepare')]",
             "apiVersion": "2015-05-01-preview",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', variables('vm_sql01'))]"
-            ],
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
