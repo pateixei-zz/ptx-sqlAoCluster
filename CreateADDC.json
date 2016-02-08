@@ -16,7 +16,7 @@
         }
     },
     "variables": {
-        "adModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.ps1.zip",
+        "adModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADDC.ps1.zip",
         "adConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
         "vm_dc01": "[parameters('vm_name')]"
     },
