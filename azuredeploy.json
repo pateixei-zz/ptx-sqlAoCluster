@@ -30,6 +30,7 @@
     "variables": {
         "CreateADDCTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADDC.json",
         "CreateFileShareWitnessTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
+        "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareSqlAlwaysOnTemplateURL.json",
         
         "sqlAOPrepareModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.ps1.zip",
         "sqlAOPrepareConfigurationFunction": "PrepareAlwaysOnSqlServer.ps1\\PrepareAlwaysOnSqlServer",
@@ -667,46 +668,6 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_sql01'))]",
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql01nic01'))]",
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql01nic02'))]"
-            ],
-            "resources": [
-                {
-                    "type": "Microsoft.Compute/virtualMachines/extensions",
-                    "name": "[concat(variables('vm_sql01'),'/sqlAOPrepare')]",
-                    "apiVersion": "2015-05-01-preview",
-                    "location": "[resourceGroup().location]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachines', variables('vm_sql01'))]"
-                    ],
-                    "properties": {
-                        "publisher": "Microsoft.Powershell",
-                        "type": "DSC",
-                        "typeHandlerVersion": "2.7",
-                        "autoUpgradeMinorVersion": false,
-                        "settings": {
-                            "wmfVersion": "4.0",
-                            "modulesUrl": "[variables('sqlAOPrepareModulesURL')]",
-                            "configurationFunction": "[variables('sqlAOPrepareConfigurationFunction')]",
-                            "properties": {
-                                "domainName": "[parameters('AdDomainName')]",
-                                "sqlAlwaysOnEndpointName": "[concat(variables('vm_sql01'),'-hadr')]",
-                                "adminCreds": {
-                                    "userName": "[parameters('adminUserName')]",
-                                    "password": "PrivateSettingsRef:adminPassword"
-                                },
-                                "sqlServiceCreds": {
-                                    "userName": "[parameters('sqlServiceUserName')]",
-                                    "password": "PrivateSettingsRef:sqlServerServiceAccountPassword"
-                                }
-                            }
-                        },
-                        "protectedSettings": {
-                            "items": {
-                                "adminPassword": "[parameters('adminPassword')]",
-                                "sqlServerServiceAccountPassword": "[parameters('sqlServicePassword')]"
-                            }
-                        }
-                    }
-                }
             ]
         },
         {
@@ -918,7 +879,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_fsw01'))]"
+                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_fsw01'))]",
+                "[resourceId('Microsoft.Resources/Deployments','CreateADDC')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -931,6 +893,29 @@
                     "adminPassword": { "value": "[parameters('adminPassword')]" },
                     "adDomainName": { "value": "[parameters('adDomainName')]" },
                     "vm_name": { "value": "[variables('vm_fsw01')]" }
+                }
+            }
+        },
+        {
+            "name": "PrepareSqlAlwaysOn",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('PrepareSqlAlwaysOnURL')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "adminUsername": { "value": "[parameters('adminUsername')]" },
+                    "adminPassword": { "value": "[parameters('adminPassword')]" },
+                    "adDomainName": { "value": "[parameters('adDomainName')]" },
+                    "sqlServiceUsername": { "value": "[parameters('sqlServiceUsername')]" },
+                    "sqlServicePassword": { "value": "[parameters('sqlServicePassword')]" },
+                    "vm_name": { "value": "[variables('vm_sql01')]" }
                 }
             }
         }

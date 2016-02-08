@@ -27,9 +27,6 @@
             "name": "[concat(variables('vm_fsw01'),'/CreateFileShareWitness')]",
             "apiVersion": "2015-05-01-preview",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', variables('vm_fsw01'))]"
-            ],
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
