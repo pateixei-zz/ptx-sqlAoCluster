@@ -30,7 +30,7 @@
     "variables": {
         "CreateADDCTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADDC.json",
         "CreateFileShareWitnessTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
-        "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareSqlAlwaysOnTemplateURL.json",
+        "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.json",
         
         "sqlAOPrepareModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.ps1.zip",
         "sqlAOPrepareConfigurationFunction": "PrepareAlwaysOnSqlServer.ps1\\PrepareAlwaysOnSqlServer",
