@@ -1,0 +1,57 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vm_name": {
+            "type": "string"
+        },
+        "AdDomainName": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "string"
+        },
+        "adminPassword": {
+            "defaultValue": null
+        }
+    },
+    "variables": {
+        "fswModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.ps1.zip",
+        "fswConfigurationFunction": "CreateFileShareWitness.ps1\\CreateFileShareWitness",
+        "vm_fsw01": "[parameters('vm_name')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vm_fsw01'),'/CreateFileShareWitness')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('vm_fsw01'))]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.7",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "modulesUrl": "[variables('fswModulesURL')]",
+                    "configurationFunction": "[variables('fswConfigurationFunction')]",
+                    "properties": {
+                        "domainName": "[parameters('AdDomainName')]",
+                        "sharePath": "[concat(variables('vm_fsw01'),'/sqlfsw')]",
+                        "adminCreds": {
+                            "userName": "[parameters('adminUserName')]",
+                            "password": "PrivateSettingsRef:adminPassword"
+                        }
+                    }
+                },
+                "protectedSettings": {
+                    "items": {
+                        "adminPassword": "[parameters('adminPassword')]"
+                    }
+                }
+            }
+        }
+    ]
+}
