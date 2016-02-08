@@ -28,7 +28,7 @@
         }
     },
     "variables": {
-        "CreateADDCTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.json",
+        "CreateADDCTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADDC.json",
         "CreateFileShareWitnessTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
         
         "sqlAOPrepareModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.ps1.zip",
