@@ -12,7 +12,8 @@
             "type": "string"
         },
         "adminPassword": {
-            "defaultValue": null
+            "defaultValue": null,
+            "type": "secureString"
         }
     },
     "variables": {
