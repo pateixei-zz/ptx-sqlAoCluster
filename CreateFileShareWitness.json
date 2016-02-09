@@ -17,7 +17,7 @@
         }
     },
     "variables": {
-        "fswModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/blob/master/CreateFileShareWitness.ps1.zip?raw=true",
+        "fswModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/raw/master/CreateFileShareWitness.ps1.zip",
         "fswConfigurationFunction": "CreateFileShareWitness.ps1\\CreateFileShareWitness",
         "vm_fsw01": "[parameters('vm_name')]"
     },
