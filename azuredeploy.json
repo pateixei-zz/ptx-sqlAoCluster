@@ -28,7 +28,7 @@
         }
     },
     "variables": {
-        "CreateADDCTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADDC.json",
+        "CreateADPDCTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.json",
         "CreateFileShareWitnessTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
         "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.json" ,
         "createClusterModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateFailoverCluster.ps1.zip",
@@ -850,7 +850,7 @@
             }
         },
         {
-            "name": "CreateADDC",
+            "name": "CreateADPDC",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -859,7 +859,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('CreateADDCTemplateURL')]",
+                    "uri": "[variables('CreateADPDCTemplateURL')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -884,7 +884,7 @@
             "apiVersion": "2015-01-01",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_fsw01'))]",
-                "[resourceId('Microsoft.Resources/Deployments','CreateADDC')]"
+                "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"
             ],
             "properties": {
                 "mode": "Incremental",
