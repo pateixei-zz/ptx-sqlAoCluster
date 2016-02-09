@@ -28,10 +28,9 @@
         }
     },
     "variables": {
-        "CreateADDCTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADDC.json",
-        "CreateFileShareWitnessTemplateURL":"https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
-        "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.json",
-        
+        "CreateADDCTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADDC.json",
+        "CreateFileShareWitnessTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
+        "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.json" ,
         "createClusterModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateFailoverCluster.ps1.zip",
         "createClusterConfigurationFunction": "CreateFailoverCluster.ps1\\CreateFailoverCluster",
         "avSets_sql": "[concat(parameters('resourcesPrefix'),'-sql')]",
@@ -65,11 +64,6 @@
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
             "properties": {
-                "dnsSettings": {
-                    "dnsServers": [
-                        "172.16.0.5"
-                    ]
-                },
                 "addressSpace": {
                     "addressPrefixes": [
                         "172.16.0.0/16"
@@ -100,7 +94,12 @@
                             "addressPrefix": "172.16.10.0/24"
                         }
                     }
-                ]
+                ],
+                "dhcpOptions": {
+                    "dnsServers": [
+                        "172.16.0.5"
+                    ]
+                }
             }
         },
         {
@@ -488,6 +487,10 @@
             "name": "[variables('vm_fsw01')]",
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]"
+            ],
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "Standard_D2"
@@ -537,11 +540,7 @@
                         }
                     ]
                 }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]"
-            ]
+            }
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
@@ -864,10 +863,18 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "adminUsername": { "value": "[parameters('adminUsername')]" },
-                    "adminPassword": { "value": "[parameters('adminPassword')]" },
-                    "adDomainName": { "value": "[parameters('adDomainName')]" },
-                    "vm_name": { "value": "[variables('vm_dc01')]" }
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "adDomainName": {
+                        "value": "[parameters('adDomainName')]"
+                    },
+                    "vm_name": {
+                        "value": "[variables('vm_dc01')]"
+                    }
                 }
             }
         },
@@ -886,10 +893,18 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "adminUsername": { "value": "[parameters('adminUsername')]" },
-                    "adminPassword": { "value": "[parameters('adminPassword')]" },
-                    "adDomainName": { "value": "[parameters('adDomainName')]" },
-                    "vm_name": { "value": "[variables('vm_fsw01')]" }
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "adDomainName": {
+                        "value": "[parameters('adDomainName')]"
+                    },
+                    "vm_name": {
+                        "value": "[variables('vm_fsw01')]"
+                    }
                 }
             }
         },
@@ -908,16 +923,26 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "adminUsername": { "value": "[parameters('adminUsername')]" },
-                    "adminPassword": { "value": "[parameters('adminPassword')]" },
-                    "adDomainName": { "value": "[parameters('adDomainName')]" },
-                    "sqlServiceUsername": { "value": "[parameters('sqlServiceUsername')]" },
-                    "sqlServicePassword": { "value": "[parameters('sqlServicePassword')]" },
-                    "vm_name": { "value": "[variables('vm_sql01')]" }
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "adDomainName": {
+                        "value": "[parameters('adDomainName')]"
+                    },
+                    "sqlServiceUsername": {
+                        "value": "[parameters('sqlServiceUsername')]"
+                    },
+                    "sqlServicePassword": {
+                        "value": "[parameters('sqlServicePassword')]"
+                    },
+                    "vm_name": {
+                        "value": "[variables('vm_sql01')]"
+                    }
                 }
             }
         }
-        
     ]
 }
-
