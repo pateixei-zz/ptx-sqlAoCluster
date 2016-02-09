@@ -37,7 +37,7 @@
                     "configurationFunction": "[variables('fswConfigurationFunction')]",
                     "properties": {
                         "domainName": "[parameters('AdDomainName')]",
-                        "sharePath": "[concat(variables('vm_fsw01'),'/sqlfsw')]",
+                        "sharePath": "[concat(variables('vm_fsw01'),'-sqlfsw')]",
                         "adminCreds": {
                             "userName": "[parameters('adminUserName')]",
                             "password": "PrivateSettingsRef:adminPassword"

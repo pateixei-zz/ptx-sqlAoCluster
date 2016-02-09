@@ -30,7 +30,7 @@
     "variables": {
         "CreateADPDCTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.json",
         "CreateFileShareWitnessTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
-        "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.json" ,
+        "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.json",
         "createClusterModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateFailoverCluster.ps1.zip",
         "createClusterConfigurationFunction": "CreateFailoverCluster.ps1\\CreateFailoverCluster",
         "avSets_sql": "[concat(parameters('resourcesPrefix'),'-sql')]",
@@ -97,7 +97,8 @@
                 ],
                 "dhcpOptions": {
                     "dnsServers": [
-                        "172.16.0.5"
+                        "172.16.0.5",
+                        "168.63.129.16"
                     ]
                 }
             }
