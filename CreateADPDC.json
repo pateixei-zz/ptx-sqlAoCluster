@@ -17,7 +17,7 @@
         }
     },
     "variables": {
-        "adModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADDC.ps1.zip",
+        "adModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.ps1.zip",
         "adConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
         "vm_dc01": "[parameters('vm_name')]"
     },
@@ -30,7 +30,7 @@
             "properties": {
                 "publisher": "Microsoft.Powershell",
                 "type": "DSC",
-                "typeHandlerVersion": "2.7",
+                "typeHandlerVersion": "2.3",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[variables('adModulesURL')]",
