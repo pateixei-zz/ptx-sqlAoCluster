@@ -24,7 +24,7 @@
         }
     },
     "variables": {
-        "sqlAOPrepareModulesURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.ps1.zip",
+        "sqlAOPrepareModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/blob/master/PrepareAlwaysOnSqlServer.ps1.zip?raw=true",
         "sqlAOPrepareConfigurationFunction": "PrepareAlwaysOnSqlServer.ps1\\PrepareAlwaysOnSqlServer",
         "vm_sql01": "[parameters('vm_name')]"
     },
