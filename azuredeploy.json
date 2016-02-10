@@ -196,7 +196,7 @@
                     }
                 ],
                 "dnsSettings": {
-                  "dnsServers": [ "172.16.0.5" ]
+                    "dnsServers": []
                 },
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_dc01'))]"
@@ -980,7 +980,7 @@
                         "value": "[parameters('sqlServicePassword')]"
                     },
                     "adDomainName": {
-                        "value": "[variables('adDomainName')]"
+                        "value": "[parameters('adDomainName')]"
                     }
                 }
             }

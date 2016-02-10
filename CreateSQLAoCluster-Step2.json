@@ -58,7 +58,7 @@
                     "modulesUrl": "[variables('CreateFailOverClusterModulesURL')]",
                     "configurationFunction": "[variables('CreateFailOverClusterConfigurationFunction')]",
                     "properties": {
-                        "domainName": "[parameters('AdDomainName')]",
+                        "domainName": "[parameters('adDomainName')]",
                         "clusterName": "[variables('clusterName')]",
                         "sharePath": "[variables('sharePath')]",
                         "nodes": [
