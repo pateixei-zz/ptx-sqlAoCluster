@@ -4,27 +4,45 @@
     "parameters": {
         "resourcesPrefix": {
             "type": "string",
-            "defaultValue": "ptx"
+            "defaultValue": "ptx",
+            "metadata": {
+                "description": "Naming prefix for ALL the resources in this deployment. 8-char max, lowercase alpha & numbers"
+            }
         },
         "adDomainName": {
             "type": "string",
-            "defaultValue": "contoso.azure"
+            "defaultValue": "contoso.azure",
+            "metadata": {
+                "description": "FQDN for Active Directory Domain"
+            }
         },
         "adminUsername": {
             "type": "string",
-            "defaultValue": "azureadmin"
+            "defaultValue": "azureadmin",
+            "metadata": {
+                "description": "Domain & local machine Administrator username (can´t be 'administrtor' or 'root', please choose another)"
+            }
         },
         "adminPassword": {
             "defaultValue": null,
-            "type": "secureString"
+            "type": "secureString",
+            "metadata": {
+                "description": "Administrator password"
+            }
         },
         "sqlServiceUsername": {
             "type": "string",
-            "defaultValue": "sqlsvcacct"
+            "defaultValue": "sqlsvcacct",
+            "metadata": {
+                "description": "SQL Server service account"
+            }
         },
         "sqlServicePassword": {
             "defaultValue": null,
-            "type": "secureString"
+            "type": "secureString",
+            "metadata": {
+                "description": "SQL Server service account password"
+            }
         }
     },
     "variables": {
@@ -32,7 +50,6 @@
         "CreateFileShareWitnessTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
         "CreateFailOverCluster-Step1": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step1.json",
         "CreateFailOverCluster-Step2": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step2.json",
-
         "avSets_sql": "[concat(parameters('resourcesPrefix'),'-sql')]",
         "vm_dc01": "[concat(parameters('resourcesPrefix'),'-dc01')]",
         "vm_fsw01": "[concat(parameters('resourcesPrefix'),'-fsw01')]",
@@ -237,7 +254,9 @@
                     }
                 ],
                 "dnsSettings": {
-                  "dnsServers": [ "172.16.0.5" ]
+                    "dnsServers": [
+                        "172.16.0.5"
+                    ]
                 },
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_sql'))]"
@@ -330,7 +349,9 @@
                     }
                 ],
                 "dnsSettings": {
-                  "dnsServers": ["172.16.0.5"] 
+                    "dnsServers": [
+                        "172.16.0.5"
+                    ]
                 }
             },
             "dependsOn": [
@@ -775,12 +796,12 @@
                                 "primary": true
                             }
                         },
-                      {
-                        "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql02nic02'))]",
-                        "properties": {
-                          "primary": false
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql02nic02'))]",
+                            "properties": {
+                                "primary": false
+                            }
                         }
-                      }
                     ]
                 }
             },
@@ -981,6 +1002,6 @@
                     }
                 }
             }
-        }        
+        }
     ]
 }

@@ -80,15 +80,15 @@
                             "password": "PrivateSettingsRef:adminPassword"
                         },
                         "sQLServiceCreds": {
-                            "userName": "[parameters('sqlServerServiceAccountUserName')]",
-                            "password": "PrivateSettingsRef:sqlServerServiceAccountPassword"
+                            "userName": "[parameters('sqlServiceUserName')]",
+                            "password": "PrivateSettingsRef:sqlServicePassword"
                         }
                     }
                 },
                 "protectedSettings": {
                     "items": {
                         "adminPassword": "[parameters('adminPassword')]",
-                        "sqlServerServiceAccountPassword": "[parameters('sqlServerServiceAccountPassword')]"
+                        "sqlServicePassword": "[parameters('sqlServicePassword')]"
                     }
                 }
             }
