@@ -30,9 +30,12 @@
     "variables": {
         "CreateADPDCTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.json",
         "CreateFileShareWitnessTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
-        "PrepareSqlAlwaysOnURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/PrepareAlwaysOnSqlServer.json",
-        "createClusterModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateFailoverCluster.ps1.zip",
+        "CreateFailOverCluster-Step1": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step1.json",
+        "CreateFailOverCluster-Step2": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step2.json",
+
+        "createClusterModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateSQLAoCluster-Step2.ps1.zip",
         "createClusterConfigurationFunction": "CreateFailoverCluster.ps1\\CreateFailoverCluster",
+
         "avSets_sql": "[concat(parameters('resourcesPrefix'),'-sql')]",
         "vm_dc01": "[concat(parameters('resourcesPrefix'),'-dc01')]",
         "vm_fsw01": "[concat(parameters('resourcesPrefix'),'-fsw01')]",
@@ -910,7 +913,7 @@
             }
         },
         {
-            "name": "PrepareSqlAlwaysOn",
+            "name": "CreateCluster-Step1",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -920,7 +923,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('PrepareSqlAlwaysOnURL')]",
+                    "uri": "[variables('CreateFailOverCluster-Step1')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -944,6 +947,43 @@
                     }
                 }
             }
-        }
+        },
+        {
+            "name": "CreateCluster-Step2",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]",
+                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql02'))]",
+                "[resourceId('Microsoft.Resources/Deployments','CreateCluster-Step1')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('CreateFailOverCluster-Step2')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "adDomainName": {
+                        "value": "[parameters('adDomainName')]"
+                    },
+                    "sqlServiceUsername": {
+                        "value": "[parameters('sqlServiceUsername')]"
+                    },
+                    "sqlServicePassword": {
+                        "value": "[parameters('sqlServicePassword')]"
+                    },
+                    "vm_name": {
+                        "value": "[variables('vm_sql01')]"
+                    }
+                }
+            }
+        }        
     ]
 }
