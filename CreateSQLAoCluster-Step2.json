@@ -27,7 +27,7 @@
         "vm_dc01": "[concat(parameters('resourcesPrefix'),'-dc01')]",
         "vm_sql01": "[concat(parameters('resourcesPrefix'),'-sql01')]",
         "vm_sql02": "[concat(parameters('resourcesPrefix'),'-sql02')]",
-        "vm_fsw": "[concat(parameters('resourcesPrefix'),'-fsw01')]",
+        "vm_fsw01": "[concat(parameters('resourcesPrefix'),'-fsw01')]",
         "CreateFailOverClusterModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/raw/master/CreateSQLAoCluster-Step2.ps1.zip",
         "CreateFailOverClusterConfigurationFunction": "CreateFailoverCluster.ps1\\CreateFailoverCluster",
         "ClusterName": "[concat(parameters('resourcesPrefix'),'-sqlAoFC')]",
