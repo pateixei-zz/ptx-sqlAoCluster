@@ -6,10 +6,6 @@
             "type": "string",
             "defaultValue": "ptx"
         },
-        "location": {
-            "type": "string",
-            "defaultValue": "East US"
-        },
         "adDomainName": {
             "type": "string",
             "defaultValue": "contoso.azure"
@@ -69,7 +65,7 @@
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccounts_sql01')]",
             "apiVersion": "2015-06-15",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "properties": {
                 "accountType": "Premium_LRS"
             }
@@ -200,7 +196,7 @@
                     }
                 ],
                 "dnsSettings": {
-                    "dnsServers": []
+                  "dnsServers": [ "172.16.0.5" ]
                 },
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_dc01'))]"
