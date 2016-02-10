@@ -33,9 +33,6 @@
         "CreateFailOverCluster-Step1": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step1.json",
         "CreateFailOverCluster-Step2": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step2.json",
 
-        "createClusterModulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-dsc/CreateSQLAoCluster-Step2.ps1.zip",
-        "createClusterConfigurationFunction": "CreateFailoverCluster.ps1\\CreateFailoverCluster",
-
         "avSets_sql": "[concat(parameters('resourcesPrefix'),'-sql')]",
         "vm_dc01": "[concat(parameters('resourcesPrefix'),'-dc01')]",
         "vm_fsw01": "[concat(parameters('resourcesPrefix'),'-fsw01')]",
