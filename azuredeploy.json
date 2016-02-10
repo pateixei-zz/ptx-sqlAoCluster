@@ -240,7 +240,7 @@
                     }
                 ],
                 "dnsSettings": {
-                  "dnsServers": {"value": "172.16.0.5" }
+                  "dnsServers": [ "172.16.0.5" ]
                 },
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_sql'))]"
@@ -333,7 +333,7 @@
                     }
                 ],
                 "dnsSettings": {
-                  "dnsServers": { "value": "172.16.0.5" }
+                  "dnsServers": ["172.16.0.5"] 
                 }
             },
             "dependsOn": [
