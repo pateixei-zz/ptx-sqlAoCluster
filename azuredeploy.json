@@ -942,8 +942,8 @@
                     "sqlServicePassword": {
                         "value": "[parameters('sqlServicePassword')]"
                     },
-                    "vm_name": {
-                        "value": "[variables('vm_sql01')]"
+                    "resourcesPrefix": {
+                        "value": "[variables('resourcesPrefix')]"
                     }
                 }
             }
