@@ -927,23 +927,23 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
+                    "resourcesPrefix": {
+                        "value": "[parameters('resourcesPrefix')]"
+                    },
+                    "adDomainName": {
+                        "value": "[parameters('adDomainName')]"
+                    },
                     "adminUsername": {
                         "value": "[parameters('adminUsername')]"
                     },
                     "adminPassword": {
                         "value": "[parameters('adminPassword')]"
                     },
-                    "adDomainName": {
-                        "value": "[parameters('adDomainName')]"
-                    },
                     "sqlServiceUsername": {
                         "value": "[parameters('sqlServiceUsername')]"
                     },
                     "sqlServicePassword": {
                         "value": "[parameters('sqlServicePassword')]"
-                    },
-                    "resourcesPrefix": {
-                        "value": "[parameters('resourcesPrefix')]"
                     }
                 }
             }

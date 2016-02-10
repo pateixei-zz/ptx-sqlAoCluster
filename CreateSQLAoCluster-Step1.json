@@ -5,7 +5,7 @@
         "resourcesPrefix": {
             "type": "string"
         },
-        "AdDomainName": {
+        "adDomainName": {
             "type": "string"
         },
         "adminUsername": {
@@ -44,7 +44,7 @@
                     "modulesUrl": "[variables('sqlAOPrepareModulesURL')]",
                     "configurationFunction": "[variables('sqlAOPrepareConfigurationFunction')]",
                     "properties": {
-                        "domainName": "[parameters('AdDomainName')]",
+                        "domainName": "[parameters('adDomainName')]",
                         "sqlAlwaysOnEndpointName": "[concat(variables('resourcesPrefix'),'-hadr')]",
                         "adminCreds": {
                             "userName": "[parameters('adminUserName')]",
