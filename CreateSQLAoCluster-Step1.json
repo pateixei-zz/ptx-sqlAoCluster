@@ -45,7 +45,7 @@
                     "configurationFunction": "[variables('sqlAOPrepareConfigurationFunction')]",
                     "properties": {
                         "domainName": "[parameters('AdDomainName')]",
-                        "sqlAlwaysOnEndpointName": "[concat(variables('ResourcesPrefix'),'-hadr')]",
+                        "sqlAlwaysOnEndpointName": "[concat(variables('resourcesPrefix'),'-hadr')]",
                         "adminCreds": {
                             "userName": "[parameters('adminUserName')]",
                             "password": "PrivateSettingsRef:adminPassword"
