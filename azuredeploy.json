@@ -943,7 +943,7 @@
                         "value": "[parameters('sqlServicePassword')]"
                     },
                     "resourcesPrefix": {
-                        "value": "[variables('resourcesPrefix')]"
+                        "value": "[parameters('resourcesPrefix')]"
                     }
                 }
             }
