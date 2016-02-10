@@ -6,7 +6,11 @@
             "type": "string",
             "defaultValue": "ptx"
         },
-        "AdDomainName": {
+        "location": {
+            "type": "string",
+            "defaultValue": "East US"
+        },
+        "adDomainName": {
             "type": "string",
             "defaultValue": "contoso.local"
         },
@@ -65,7 +69,7 @@
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccounts_sql01')]",
             "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "properties": {
                 "accountType": "Premium_LRS"
             }
