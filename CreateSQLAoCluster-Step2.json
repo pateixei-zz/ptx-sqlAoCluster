@@ -1,0 +1,97 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourcesPrefix": {
+            "type": "string"
+        },
+        "domainName": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "string"
+        },
+        "adminPassword": {
+            "defaultValue": null,
+            "type": "secureString"
+        },
+        "sqlServiceUserName": {
+            "type": "string"
+        },
+        "sqlServicePassword": {
+            "defaultValue": null,
+            "type": "secureString"
+        }
+    },
+    "variables": {
+        "vm_dc01": "[concat(parameters('resourcesPrefix'),'-dc01')]",
+        "vm_sql01": "[concat(parameters('resourcesPrefix'),'-sql01')]",
+        "vm_sql02": "[concat(parameters('resourcesPrefix'),'-sql02')]",
+        "vm_fsw": "[concat(parameters('resourcesPrefix'),'-fsw01')]",
+        "CreateFailOverClusterModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/raw/master/CreateSQLAoCluster-Step2.ps1.zip",
+        "CreateFailOverClusterConfigurationFunction": "CreateFailoverCluster.ps1\\CreateFailoverCluster",
+        "ClusterName": "[concat(parameters('resourcesPrefix'),'-sqlAoFC')]",
+        "sqlAlwaysOnEndpointName": "[concat(parameters('resourcesPrefix'),'-sqlAoEp')]",
+        "sqlAlwaysOnAvailabilityGroupName": "[concat(parameters('resourcesPrefix'),'-sqlAoAG')]",
+        "sqlAlwaysOnAvailabilityGroupListenerName": "[concat(parameters('resourcesPrefix'),'-sqlAoListener')]",
+        "lbName": "[concat(parameters('resourcesPrefix'),'-ilb')]",
+        "lbAddress": "172.16.1.10",
+        "primaryReplica": "[variables('vm_sql01')]",
+        "secondaryReplica": "[variables('vm_sql02')]",
+        "dnsServerName": "[variables('vm_dc01')]",
+        "databaseNames": [ "concat(parameters('resourcesPrefix'),'-test-db01')" ],
+        "sharePath": "[concat(variables('vm_fsw01'),'-sqlfsw')]"       
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vm_sql02'),'/CreateFailOverCluster')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.13",
+                "autoUpgradeMinorVersion": false,
+                "settings": {
+                    "wmfVersion": "4.0",
+                    "modulesUrl": "[variables('CreateFailOverClusterModulesURL')]",
+                    "configurationFunction": "[variables('CreateFailOverClusterConfigurationFunction')]",
+                    "properties": {
+                        "domainName": "[parameters('domainName')]",
+                        "clusterName": "[variables('clusterName')]",
+                        "sharePath": "[variables('sharePath')]",
+                        "nodes": [
+                            "[variables('vm_sql01')]",
+                            "[variables('vm_sql02')]"
+                        ],
+                        "sqlAlwaysOnAvailabilityGroupListenerPort": 1433,
+                        "sqlAlwaysOnEndpointName": "[variables('sqlAlwaysOnEndpointName')]",
+                        "sqlAlwaysOnAvailabilityGroupName": "[variables('sqlAlwaysOnAvailabilityGroupName')]",
+                        "sqlAlwaysOnAvailabilityGroupListenerName": "[variables('sqlAlwaysOnAvailabilityGroupListenerName')]",
+                        "lbName": "[variables('sqlLBName')]",
+                        "lbAddress": "[variables('sqlLBIPAddress')]",
+                        "primaryReplica": "[variables('primaryReplica')]",
+                        "secondaryReplica": "[variables('secondaryReplica')]",
+                        "databaseNames": "[variables('databaseNames')]",
+                        "dnsServerName": "[variables('dnsServerName')]",
+                        "adminCreds": {
+                            "userName": "[parameters('adminUserName')]",
+                            "password": "PrivateSettingsRef:adminPassword"
+                        },
+                        "sQLServiceCreds": {
+                            "userName": "[parameters('sqlServerServiceAccountUserName')]",
+                            "password": "PrivateSettingsRef:sqlServerServiceAccountPassword"
+                        }
+                    }
+                },
+                "protectedSettings": {
+                    "items": {
+                        "adminPassword": "[parameters('adminPassword')]",
+                        "sqlServerServiceAccountPassword": "[parameters('sqlServerServiceAccountPassword')]"
+                    }
+                }
+            }
+        }
+    ]
+}

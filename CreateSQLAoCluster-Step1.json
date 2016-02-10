@@ -2,7 +2,7 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vm_name": {
+        "ResourcesPrefix": {
             "type": "string"
         },
         "AdDomainName": {
@@ -24,9 +24,9 @@
         }
     },
     "variables": {
-        "sqlAOPrepareModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/raw/master/PrepareAlwaysOnSqlServer.ps1.zip",
+        "sqlAOPrepareModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/raw/master/CreateSQLAoCluster-Step1.ps1.zip",
         "sqlAOPrepareConfigurationFunction": "PrepareAlwaysOnSqlServer.ps1\\PrepareAlwaysOnSqlServer",
-        "vm_sql01": "[parameters('vm_name')]"
+        "vm_sql01": "[concat(parameters('resourcesPrefix'),'-sql01')]"
     },
     "resources": [
         {
@@ -45,7 +45,7 @@
                     "configurationFunction": "[variables('sqlAOPrepareConfigurationFunction')]",
                     "properties": {
                         "domainName": "[parameters('AdDomainName')]",
-                        "sqlAlwaysOnEndpointName": "[concat(variables('vm_sql01'),'-hadr')]",
+                        "sqlAlwaysOnEndpointName": "[concat(variables('ResourcesPrefix'),'-hadr')]",
                         "adminCreds": {
                             "userName": "[parameters('adminUserName')]",
                             "password": "PrivateSettingsRef:adminPassword"

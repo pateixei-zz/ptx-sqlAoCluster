@@ -59,6 +59,33 @@
     },
     "resources": [
         {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccounts_sql01')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "accountType": "Premium_LRS"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccounts_sql02')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "accountType": "Premium_LRS"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccounts_01')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "accountType": "Standard_LRS"
+            }
+        },
+        {
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[variables('vnet_name')]",
             "apiVersion": "2015-06-15",
@@ -111,33 +138,6 @@
             "properties": {
                 "platformUpdateDomainCount": 5,
                 "platformFaultDomainCount": 3
-            }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('storageAccounts_01')]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "accountType": "Standard_LRS"
-            }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('storageAccounts_sql01')]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "accountType": "Premium_LRS"
-            }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('storageAccounts_sql02')]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "accountType": "Premium_LRS"
             }
         },
         {
@@ -237,7 +237,7 @@
                     }
                 ],
                 "dnsSettings": {
-                    "dnsServers": []
+                  "dnsServers": {"value": "172.16.0.5" }
                 },
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_sql'))]"
@@ -330,7 +330,7 @@
                     }
                 ],
                 "dnsSettings": {
-                    "dnsServers": []
+                  "dnsServers": { "value": "172.16.0.5" }
                 }
             },
             "dependsOn": [
@@ -775,12 +775,12 @@
                                 "primary": true
                             }
                         },
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql02nic02'))]",
-                            "properties": {
-                                "primary": false
-                            }
+                      {
+                        "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql02nic02'))]",
+                        "properties": {
+                          "primary": false
                         }
+                      }
                     ]
                 }
             },
