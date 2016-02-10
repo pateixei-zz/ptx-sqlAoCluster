@@ -964,14 +964,14 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
+                    "resourcesPrefix": {
+                        "value": "[parameters('resourcesPrefix')]"
+                    },
                     "adminUsername": {
                         "value": "[parameters('adminUsername')]"
                     },
                     "adminPassword": {
                         "value": "[parameters('adminPassword')]"
-                    },
-                    "adDomainName": {
-                        "value": "[parameters('adDomainName')]"
                     },
                     "sqlServiceUsername": {
                         "value": "[parameters('sqlServiceUsername')]"
@@ -979,8 +979,8 @@
                     "sqlServicePassword": {
                         "value": "[parameters('sqlServicePassword')]"
                     },
-                    "vm_name": {
-                        "value": "[variables('vm_sql01')]"
+                    "adDomainName": {
+                        "value": "[variables('adDomainName')]"
                     }
                 }
             }

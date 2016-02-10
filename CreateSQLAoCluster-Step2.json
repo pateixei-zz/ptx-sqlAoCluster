@@ -5,7 +5,7 @@
         "resourcesPrefix": {
             "type": "string"
         },
-        "domainName": {
+        "adDomainName": {
             "type": "string"
         },
         "adminUsername": {
@@ -58,7 +58,7 @@
                     "modulesUrl": "[variables('CreateFailOverClusterModulesURL')]",
                     "configurationFunction": "[variables('CreateFailOverClusterConfigurationFunction')]",
                     "properties": {
-                        "domainName": "[parameters('domainName')]",
+                        "domainName": "[parameters('AdDomainName')]",
                         "clusterName": "[variables('clusterName')]",
                         "sharePath": "[variables('sharePath')]",
                         "nodes": [
