@@ -39,7 +39,7 @@
         "primaryReplica": "[variables('vm_sql01')]",
         "secondaryReplica": "[variables('vm_sql02')]",
         "dnsServerName": "[variables('vm_dc01')]",
-        "databaseNames": [ "concat(parameters('resourcesPrefix'),'-test-db01')" ],
+        "databaseNames": [ "concat(parameters('resourcesPrefix'),'-test-db01')", "concat(parameters('resourcesPrefix'),'-test-db02')" ],
         "sharePath": "[concat(variables('vm_fsw01'),'-sqlfsw')]"       
     },
     "resources": [
@@ -59,22 +59,22 @@
                     "configurationFunction": "[variables('CreateFailOverClusterConfigurationFunction')]",
                     "properties": {
                         "domainName": "[parameters('adDomainName')]",
-                        "clusterName": "[variables('clusterName')]",
-                        "sharePath": "[variables('sharePath')]",
-                        "nodes": [
+                        "ClusterName": "[variables('clusterName')]",
+                        "SharePath": "[variables('sharePath')]",
+                        "Nodes": [
                             "[variables('vm_sql01')]",
                             "[variables('vm_sql02')]"
                         ],
                         "sqlAlwaysOnAvailabilityGroupListenerPort": 1433,
-                        "sqlAlwaysOnEndpointName": "[variables('sqlAlwaysOnEndpointName')]",
-                        "sqlAlwaysOnAvailabilityGroupName": "[variables('sqlAlwaysOnAvailabilityGroupName')]",
-                        "sqlAlwaysOnAvailabilityGroupListenerName": "[variables('sqlAlwaysOnAvailabilityGroupListenerName')]",
-                        "lbName": "[variables('lbName')]",
-                        "lbAddress": "[variables('lbAddress')]",
-                        "primaryReplica": "[variables('primaryReplica')]",
-                        "secondaryReplica": "[variables('secondaryReplica')]",
-                        "databaseNames": "[variables('databaseNames')]",
-                        "dnsServerName": "[variables('dnsServerName')]",
+                        "SqlAlwaysOnEndpointName": "[variables('sqlAlwaysOnEndpointName')]",
+                        "SqlAlwaysOnAvailabilityGroupName": "[variables('sqlAlwaysOnAvailabilityGroupName')]",
+                        "SqlAlwaysOnAvailabilityGroupListenerName": "[variables('sqlAlwaysOnAvailabilityGroupListenerName')]",
+                        "LBName": "[variables('lbName')]",
+                        "LBAddress": "[variables('lbAddress')]",
+                        "PrimaryReplica": "[variables('primaryReplica')]",
+                        "SecondaryReplica": "[variables('secondaryReplica')]",
+                        "DatabaseNames": "[variables('databaseNames')]",
+                        "DNSServerName": "[variables('dnsServerName')]",
                         "adminCreds": {
                             "userName": "[parameters('adminUserName')]",
                             "password": "PrivateSettingsRef:adminPassword"
