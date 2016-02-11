@@ -42,7 +42,7 @@
         "secondaryReplica": "[variables('vm_sql02')]",
         "dnsServerName": "[variables('vm_dc01')]",
         "databaseNames": [ "concat(parameters('resourcesPrefix'),'-test-db01')", "concat(parameters('resourcesPrefix'),'-test-db02')" ],
-        "sharePath": "[concat(variables('vm_fsw01'),'-sqlfsw')]"       
+        "sharePath": "[concat('\\\\',variables('vm_fsw01'),'\\sqlfsw')]"       
     },
     "resources": [
         {
