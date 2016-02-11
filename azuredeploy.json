@@ -497,6 +497,12 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_dc01nic01'))]"
                         }
                     ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[concat('http://',variables('storageAccounts_01'),'.blob.core.windows.net')]"
+                    }
                 }
             },
             "dependsOn": [
@@ -513,6 +519,28 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]",
                 "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"
+            ],
+            "resources": [
+                {
+                    "apiVersion": "2015-06-15",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "name": "[concat(variables('vm_fsw01'),'/joindomain')]",
+                    "location": "[resourceGroup().location]",
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "JsonADDomainExtension",
+                        "typeHandlerVersion": "1.0",
+                        "settings": {
+                            "Name": "[parameters('adDomainName')]",
+                            "User": "[concat(parameters('adminUsername'), '@', parameters('adDomainName'))]",
+                            "Restart": "true",
+                            "Options": 3
+                        },
+                        "protectedsettings": {
+                            "Password": "[parameters('adminPassword')]"
+                        }
+                    }
+                }
             ],
             "properties": {
                 "hardwareProfile": {
@@ -563,6 +591,12 @@
                         }
                     ]
                 }
+            },
+            "diagnosticsProfile": {
+                "bootDiagnostics": {
+                    "enabled": "true",
+                    "storageUri": "[concat('http://',variables('storageAccounts_01'),'.blob.core.windows.net')]"
+                }
             }
         },
         {
@@ -570,6 +604,28 @@
             "name": "[variables('vm_sql01')]",
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
+            "resources": [
+                {
+                    "apiVersion": "2015-06-15",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "name": "[concat(variables('vm_sql01'),'/joindomain')]",
+                    "location": "[resourceGroup().location]",
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "JsonADDomainExtension",
+                        "typeHandlerVersion": "1.0",
+                        "settings": {
+                            "Name": "[parameters('adDomainName')]",
+                            "User": "[concat(parameters('adminUsername'), '@', parameters('adDomainName'))]",
+                            "Restart": "true",
+                            "Options": 3
+                        },
+                        "protectedsettings": {
+                            "Password": "[parameters('adminPassword')]"
+                        }
+                    }
+                }
+            ],
             "properties": {
                 "availabilitySet": {
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSets_sql'))]"
@@ -680,6 +736,12 @@
                             }
                         }
                     ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[concat('http://',variables('storageAccounts_01'),'.blob.core.windows.net')]"
+                    }
                 }
             },
             "dependsOn": [
@@ -695,6 +757,28 @@
             "name": "[variables('vm_sql02')]",
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
+            "resources": [
+                {
+                    "apiVersion": "2015-06-15",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "name": "[concat(variables('vm_sql02'),'/joindomain')]",
+                    "location": "[resourceGroup().location]",
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "JsonADDomainExtension",
+                        "typeHandlerVersion": "1.0",
+                        "settings": {
+                            "Name": "[parameters('adDomainName')]",
+                            "User": "[concat(parameters('adminUsername'), '@', parameters('adDomainName'))]",
+                            "Restart": "true",
+                            "Options": 3
+                        },
+                        "protectedsettings": {
+                            "Password": "[parameters('adminPassword')]"
+                        }
+                    }
+                }
+            ],
             "properties": {
                 "availabilitySet": {
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSets_sql'))]"
@@ -805,6 +889,12 @@
                             }
                         }
                     ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[concat('http://',variables('storageAccounts_01'),'.blob.core.windows.net')]"
+                    }
                 }
             },
             "dependsOn": [

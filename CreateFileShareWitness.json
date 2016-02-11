@@ -25,24 +25,6 @@
         "vm_fsw01": "[parameters('vm_name')]"
     },
     "resources": [
-                {
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('vnet_name')]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "172.16.0.0/16"
-                    ]
-                },
-                "dhcpOptions": {
-                    "dnsServers": [
-                        "172.16.0.5"
-                    ]
-                }
-            }
-        },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vm_fsw01'),'/CreateFileShareWitness')]",
