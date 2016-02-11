@@ -47,16 +47,13 @@
     },
     "variables": {
         "CreateADPDCTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.json",
-        "CreateFileShareWitnessTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateFileShareWitness.json",
         "CreateFailOverCluster-Step1": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step1.json",
         "CreateFailOverCluster-Step2": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step2.json",
         "avSets_sql": "[concat(parameters('resourcesPrefix'),'-sql')]",
         "vm_dc01": "[concat(parameters('resourcesPrefix'),'-dc01')]",
-        "vm_fsw01": "[concat(parameters('resourcesPrefix'),'-fsw01')]",
         "vm_sql01": "[concat(parameters('resourcesPrefix'),'-sql01')]",
         "vm_sql02": "[concat(parameters('resourcesPrefix'),'-sql02')]",
         "nic_dc01nic01": "[concat(parameters('resourcesPrefix'),'-dc01nic01')]",
-        "nic_fsw01nic01": "[concat(parameters('resourcesPrefix'),'-fsw01nic01')]",
         "nic_sql01nic01": "[concat(parameters('resourcesPrefix'),'-sql01nic01')]",
         "nic_sql01nic02": "[concat(parameters('resourcesPrefix'),'-sql01nic02')]",
         "nic_sql02nic01": "[concat(parameters('resourcesPrefix'),'-sql02nic01')]",
@@ -187,36 +184,6 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip_dc01'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_dc01'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[variables('nic_fsw01nic01')]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAddress": "172.16.0.7",
-                            "privateIPAllocationMethod": "Static",
-                            "subnet": {
-                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name')), '/subnets/ad-subnet')]"
-                            }
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": []
-                },
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_dc01'))]"
-                }
-            },
-            "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_dc01'))]"
             ]
@@ -512,99 +479,6 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('vm_fsw01')]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]",
-                "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"
-            ],
-            "resources": [
-                {
-                    "apiVersion": "2015-06-15",
-                    "type": "Microsoft.Compute/virtualMachines/extensions",
-                    "name": "[concat(variables('vm_fsw01'),'/joindomain')]",
-                    "location": "[resourceGroup().location]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_fsw01'))]",
-                        "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"
-                    ],
-                    "properties": {
-                        "publisher": "Microsoft.Compute",
-                        "type": "JsonADDomainExtension",
-                        "typeHandlerVersion": "1.0",
-                        "settings": {
-                            "Name": "[parameters('adDomainName')]",
-                            "User": "[concat(parameters('adminUsername'), '@', parameters('adDomainName'))]",
-                            "Restart": "true",
-                            "Options": 3
-                        },
-                        "protectedsettings": {
-                            "Password": "[parameters('adminPassword')]"
-                        }
-                    }
-                }
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D1"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2012-R2-Datacenter",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "name": "[variables('vm_fsw01')]",
-                        "createOption": "FromImage",
-                        "vhd": {
-                            "uri": "[concat('https', '://', variables('storageAccounts_01'), '.blob.core.windows.net', concat('/vhds/', variables('vm_fsw01'),'-os-disk.vhd'))]"
-                        },
-                        "caching": "ReadWrite"
-                    },
-                    "dataDisks": [
-                        {
-                            "vhd": {
-                                "uri": "[concat('https', '://', variables('storageAccounts_01'), '.blob.core.windows.net', concat('/vhds/', variables('vm_fsw01'),'-data-disk-1.vhd'))]"
-                            },
-                            "name": "[concat(variables('vm_fsw01'),'-data-disk-1')]",
-                            "caching": "None",
-                            "createOption": "empty",
-                            "diskSizeGB": "512",
-                            "lun": 0
-                        }
-                    ]
-                },
-                "osProfile": {
-                    "computerName": "[variables('vm_fsw01')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "windowsConfiguration": {
-                        "provisionVMAgent": true,
-                        "enableAutomaticUpdates": true
-                    },
-                    "secrets": [],
-                    "adminPassword": "[parameters('adminPassword')]"
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": "true",
-                        "storageUri": "[concat('http://',variables('storageAccounts_01'),'.blob.core.windows.net')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vm_sql01')]",
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
@@ -624,14 +498,14 @@
                     "dependsOn": [
                         "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]",
                         "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"
-                                            ],
+                    ],
                     "properties": {
                         "publisher": "Microsoft.Compute",
                         "type": "JsonADDomainExtension",
                         "typeHandlerVersion": "1.0",
                         "settings": {
                             "Name": "[parameters('adDomainName')]",
-                            "User": "[concat(parameters('adminUsername'), '@', parameters('adDomainName'))]",
+                            "User": "[concat(parameters('adDomainName'), '\\', parameters('adminUsername'))]",
                             "Restart": "true",
                             "Options": 3
                         },
@@ -773,7 +647,7 @@
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
                         "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql02'))]",
-                        "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"                       
+                        "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"
                     ],
                     "properties": {
                         "publisher": "Microsoft.Compute",
@@ -1006,45 +880,11 @@
             }
         },
         {
-            "name": "CreateFileShareWitness",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-01-01",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_fsw01'))]",
-                "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('CreateFileShareWitnessTemplateURL')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "adminUsername": {
-                        "value": "[parameters('adminUsername')]"
-                    },
-                    "adminPassword": {
-                        "value": "[parameters('adminPassword')]"
-                    },
-                    "adDomainName": {
-                        "value": "[parameters('adDomainName')]"
-                    },
-                    "vm_name": {
-                        "value": "[variables('vm_fsw01')]"
-                    },
-                    "vnet_name": {
-                        "value": "[variables('vnet_name')]"
-                    }
-                }
-            }
-        },
-        {
             "name": "CreateCluster-Step1",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]",
-                "[resourceId('Microsoft.Resources/Deployments','CreateFileShareWitness')]"
+                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]"
             ],
             "properties": {
                 "mode": "Incremental",
