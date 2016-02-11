@@ -47,7 +47,7 @@
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vm_sql01'),'/CreateFailoverCluster')]",
+            "name": "[concat(variables('vm_sql02'),'/CreateFailoverCluster')]",
             "apiVersion": "2015-05-01-preview",
             "location": "[resourceGroup().location]",
             "properties": {
