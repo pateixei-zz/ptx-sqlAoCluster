@@ -27,7 +27,7 @@
     "resources": [
                 {
             "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('vnet_name')]",
+            "name": "[parameters('vnet_name')]",
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
             "properties": {
