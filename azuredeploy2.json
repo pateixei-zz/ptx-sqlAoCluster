@@ -873,7 +873,7 @@
                     "adDomainName": {
                         "value": "[parameters('adDomainName')]"
                     },
-                    "SharePath": {
+                    "sharePath": {
                         "value": "SqlFsw"
                     },
                     "vm_name": {
