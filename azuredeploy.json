@@ -971,7 +971,6 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-01-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]",
                 "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql02'))]",
                 "[resourceId('Microsoft.Resources/Deployments','CreateCluster-Step1')]"
             ],
