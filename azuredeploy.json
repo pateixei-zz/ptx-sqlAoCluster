@@ -32,9 +32,9 @@
         },
         "sqlServiceUsername": {
             "type": "string",
-            "defaultValue": "sqlsvcacct",
+            "defaultValue": "azuredba",
             "metadata": {
-                "description": "SQL Server service account"
+                "description": "SQL Superver service account"
             }
         },
         "sqlServicePassword": {
