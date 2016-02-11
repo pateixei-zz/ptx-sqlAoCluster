@@ -11,6 +11,9 @@
         "adminUsername": {
             "type": "string"
         },
+        "SharePath": {
+            "type": "string"
+        },
         "adminPassword": {
             "defaultValue": null,
             "type": "secureString"
@@ -37,6 +40,7 @@
                     "ConfigurationFunction": "[variables('adConfigurationFunction')]",
                     "Properties": {
                         "DomainName": "[parameters('AdDomainName')]",
+                        "sharePath": "[parameters('sharePath')]",
                         "AdminCreds": {
                             "UserName": "[parameters('adminUsername')]",
                             "Password": "PrivateSettingsRef:adminPassword"
