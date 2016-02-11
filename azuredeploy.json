@@ -926,6 +926,9 @@
                     },
                     "vm_name": {
                         "value": "[variables('vm_fsw01')]"
+                    },
+                    "vnet_name": {
+                        "value": "[variables('vnet_name')]"
                     }
                 }
             }

@@ -38,8 +38,8 @@
         "sqlAlwaysOnAvailabilityGroupListenerName": "[concat(parameters('resourcesPrefix'),'-sqlAoListener')]",
         "lbName": "[concat(parameters('resourcesPrefix'),'-ilb')]",
         "lbAddress": "172.16.1.10",
-        "primaryReplica": "[variables('vm_sql01')]",
-        "secondaryReplica": "[variables('vm_sql02')]",
+        "primaryReplica": "[variables('vm_sql02')]",
+        "secondaryReplica": "[variables('vm_sql01')]",
         "dnsServerName": "[variables('vm_dc01')]",
         "databaseNames": [ "concat(parameters('resourcesPrefix'),'-test-db01')", "concat(parameters('resourcesPrefix'),'-test-db02')" ],
         "sharePath": "[concat('\\\\',variables('vm_fsw01'),'\\sqlfsw')]"       
@@ -63,7 +63,7 @@
                         "domainName": "[parameters('adDomainName')]",
                         "ClusterName": "[variables('clusterName')]",
                         "SharePath": "[variables('sharePath')]",
-                        "Nodes": [
+                        "Nodes":  [ 
                             "[variables('vm_sql01')]",
                             "[variables('vm_sql02')]"
                         ],
