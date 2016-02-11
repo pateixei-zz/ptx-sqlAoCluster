@@ -655,7 +655,7 @@
                         "typeHandlerVersion": "1.0",
                         "settings": {
                             "Name": "[parameters('adDomainName')]",
-                            "User": "[concat(parameters('adminUsername'), '@', parameters('adDomainName'))]",
+                            "User": "[concat(parameters('adDomainName'), '\\', parameters('adminUsername'))]",
                             "Restart": "true",
                             "Options": 3
                         },
