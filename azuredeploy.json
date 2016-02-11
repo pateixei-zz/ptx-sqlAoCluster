@@ -511,11 +511,12 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_fsw01nic01'))]",
+                "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]"
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_D2"
+                    "vmSize": "Standard_D1"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -682,6 +683,7 @@
                 }
             },
             "dependsOn": [
+                "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSets_sql'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_sql01'))]",
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql01nic01'))]",
@@ -806,6 +808,7 @@
                 }
             },
             "dependsOn": [
+                "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSets_sql'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_sql02'))]",
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql02nic01'))]",
