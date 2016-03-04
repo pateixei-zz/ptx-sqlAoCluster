@@ -86,11 +86,17 @@
     "sqlAlwaysOnAvailabilityGroupListenerName": "[concat(parameters('resourcesPrefix'),'-SqlListener')]",
     "lbName": "[concat(parameters('resourcesPrefix'),'-ilb')]",
     "lbAddress": "172.16.1.10",
+    "vm_dc01ip01": "172.16.0.5",
+    "vm_web01ip01": "172.16.10.5",
+    "vm_sql01ip01": "172.16.1.5",
+    "vm_sql02ip01": "172.16.1.6",
+    "vm_sql01ip02": "172.16.2.5",
+    "vm_sql02ip02": "172.16.2.6",
     "primaryReplica": "[variables('vm_sql02')]",
     "secondaryReplica": "[variables('vm_sql01')]",
     "dnsServerName": "[variables('vm_dc01')]",
     "databaseNames": [ "[concat(parameters('resourcesPrefix'),'-test-db01')]", "[concat(parameters('resourcesPrefix'),'-test-db02')]" ]
-  },
+},
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
@@ -158,7 +164,7 @@
         ],
         "dhcpOptions": {
           "dnsServers": [
-            "172.16.0.5",
+            "[variables('vm_dc01ip01')]",
             "168.63.129.16"
           ]
         }
@@ -174,7 +180,7 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAddress": "172.16.0.5",
+              "privateIPAddress": "[variables('vm_dc01ip01')]",
               "privateIPAllocationMethod": "Static",
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip_dc01'))]"
@@ -209,7 +215,7 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAddress": "172.16.10.5",
+              "privateIPAddress": "[variables('vm_web01ip01')]",
               "privateIPAllocationMethod": "Static",
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip_web01'))]"
@@ -249,7 +255,7 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAddress": "172.16.1.5",
+              "privateIPAddress": "[variables('vm_sql01ip01')]",
               "privateIPAllocationMethod": "Static",
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip_sql01'))]"
@@ -267,7 +273,7 @@
         ],
         "dnsSettings": {
           "dnsServers": [
-            "172.16.0.5"
+            "[variables('vm_dc01ip01')]"
           ]
         },
         "networkSecurityGroup": {
@@ -285,7 +291,7 @@
           {
             "name": "ipconfig2",
             "properties": {
-              "privateIPAddress": "172.16.2.5",
+              "privateIPAddress": "[variables('vm_sql01ip02')]",
               "privateIPAllocationMethod": "Static",
               "subnet": {
                 "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name')), '/subnets/hb-subnet')]"
@@ -318,7 +324,7 @@
           {
             "name": "ipconfig3",
             "properties": {
-              "privateIPAddress": "172.16.1.6",
+              "privateIPAddress": "[variables('vm_sql02ip01')]",
               "privateIPAllocationMethod": "Static",
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip_sql02'))]"
@@ -336,7 +342,7 @@
         ],
         "dnsSettings": {
           "dnsServers": [
-            "172.16.0.5"
+            "[variables('vm_dc01ip01')]"
           ]
         },
         "networkSecurityGroup": {
@@ -354,7 +360,7 @@
           {
             "name": "ipconfig4",
             "properties": {
-              "privateIPAddress": "172.16.2.6",
+              "privateIPAddress": "[variables('vm_sql02ip02')]",
               "privateIPAllocationMethod": "Static",
               "subnet": {
                 "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name')), '/subnets/hb-subnet')]"
@@ -386,7 +392,7 @@
             "name": "sql-lb-fe",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "172.16.1.10",
+              "privateIPAddress": "[variables('lbAddress')]",
               "subnet": {
                 "id": "[concat(variables('vnetID'),'/subnets/db-subnet' )]"
               }
