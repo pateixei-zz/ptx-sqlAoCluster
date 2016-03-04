@@ -20,7 +20,7 @@
       "type": "string",
       "defaultValue": "azureadmin",
       "metadata": {
-        "description": "Domain & local machine Administrator username (can´t be 'administrator' or 'root', please choose another)"
+        "description": "Domain & local machine Administrator username (can´t be 'administrtor' or 'root', please choose another)"
       }
     },
     "adminPassword": {
@@ -46,6 +46,7 @@
     }
   },
   "variables": {
+    "CreateADPDCTemplateURL": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateADPDC.json",
     "CreateFailOverCluster-Step1": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step1.json",
     "CreateFailOverCluster-Step2": "https://raw.githubusercontent.com/pateixei/ptx-sqlAoCluster/master/CreateSQLAoCluster-Step2.json",
     "avSets_sql": "[concat(parameters('resourcesPrefix'),'-sql')]",
@@ -73,23 +74,7 @@
     "storageAccounts_sql02": "[concat(parameters('resourcesPrefix'),'sql02')]",
     "ilbName": "[concat(parameters('resourcesPrefix'),'-ilb')]",
     "ilbNicName": "[concat(parameters('resourcesPrefix'),'-ilbNic')]",
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]",
-    "adModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/raw/master/CreateADPDC.ps1.zip",
-    "adConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
-    "sqlAOPrepareModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/raw/master/CreateSQLAoCluster.zip",
-    "sqlAOPrepareConfigurationFunction": "CreateClusterNode01.ps1\\PrepareAlwaysOnSqlServer",
-    "CreateFailOverClusterModulesURL": "https://github.com/pateixei/ptx-sqlAoCluster/raw/master/CreateSQLAoCluster.zip",
-    "CreateFCConfigurationFunction": "CreateClusterNode02.ps1\\CreateFailoverCluster",
-    "ClusterName": "[concat(parameters('resourcesPrefix'),'-sqlAoFC')]",
-    "sqlAlwaysOnEndpointName": "[concat(parameters('resourcesPrefix'),'-sqlAoEp')]",
-    "sqlAlwaysOnAvailabilityGroupName": "[concat(parameters('resourcesPrefix'),'-sqlAoAG')]",
-    "sqlAlwaysOnAvailabilityGroupListenerName": "[concat(parameters('resourcesPrefix'),'-sqlAoListener')]",
-    "lbName": "[concat(parameters('resourcesPrefix'),'-ilb')]",
-    "lbAddress": "172.16.1.10",
-    "primaryReplica": "[variables('vm_sql02')]",
-    "secondaryReplica": "[variables('vm_sql01')]",
-    "dnsServerName": "[variables('vm_dc01')]",
-    "databaseNames": [ "[concat(parameters('resourcesPrefix'),'-test-db01')]", "[concat(parameters('resourcesPrefix'),'-test-db02')]" ]
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
   },
   "resources": [
     {
@@ -162,6 +147,26 @@
             "168.63.129.16"
           ]
         }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('avSets_sql')]",
+      "apiVersion": "2015-06-15",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "platformUpdateDomainCount": 5,
+        "platformFaultDomainCount": 3
+      }
+    },
+    {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('avSets_web')]",
+      "apiVersion": "2015-06-15",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "platformUpdateDomainCount": 5,
+        "platformFaultDomainCount": 3
       }
     },
     {
@@ -335,9 +340,7 @@
           }
         ],
         "dnsSettings": {
-          "dnsServers": [
-            "172.16.0.5"
-          ]
+          "dnsServers": [ ]
         },
         "networkSecurityGroup": {
           "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg_sql'))]"
@@ -364,6 +367,7 @@
         ],
         "dnsSettings": {
           "dnsServers": [
+            "172.16.0.5"
           ]
         }
       },
@@ -371,65 +375,6 @@
         "[resourceId('Microsoft.Network/publicIPAddresses', variables('pip_sql02'))]",
         "[resourceId('Microsoft.Network/virtualNetworks', variables('vnet_name'))]"
       ]
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "name": "[variables('ilbName')]",
-      "type": "Microsoft.Network/loadBalancers",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('vnet_name'))]"
-      ],
-      "properties": {
-        "frontendIPConfigurations": [
-          {
-            "name": "sql-lb-fe",
-            "properties": {
-              "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "172.16.1.10",
-              "subnet": {
-                "id": "[concat(variables('vnetID'),'/subnets/db-subnet' )]"
-              }
-            }
-          }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "sql-lb-be"
-          }
-        ],
-        "loadBalancingRules": [
-          {
-            "name": "sql-listener",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('ilbName')), '/frontendIpConfigurations/sql-lb-fe')]"
-              },
-              "backendAddressPool": {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('ilbName')), '/backendAddressPools/sql-lb-be')]"
-              },
-              "probe": {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('ilbName')), '/probes/sql-probe')]"
-              },
-              "protocol": "tcp",
-              "frontendPort": 1433,
-              "backendPort": 1433,
-              "enableFloatingIP": true
-            }
-          }
-        ],
-        "probes": [
-          {
-            "name": "sql-probe",
-            "properties": {
-              "protocol": "tcp",
-              "port": 59999,
-              "intervalInSeconds": "5",
-              "numberOfProbes": "2"
-            }
-          }
-        ]
-      }
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -555,35 +500,10 @@
       }
     },
     {
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('avSets_sql')]",
-      "apiVersion": "2015-06-15",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "platformUpdateDomainCount": 5,
-        "platformFaultDomainCount": 3
-      }
-    },
-    {
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('avSets_web')]",
-      "apiVersion": "2015-06-15",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "platformUpdateDomainCount": 5,
-        "platformFaultDomainCount": 3
-      }
-    },
-
-    {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vm_dc01')]",
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_dc01nic01'))]"
-      ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "Standard_D2"
@@ -639,7 +559,11 @@
             "storageUri": "[concat('http://',variables('storageAccounts_01'),'.blob.core.windows.net')]"
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_dc01nic01'))]"
+      ]
     },
     {
       "type": "Microsoft.Compute/virtualMachines",
@@ -647,11 +571,36 @@
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('avSets_web'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_01'))]",
         "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_web01nic01'))]"
       ],
       "resources": [
+        {
+          "apiVersion": "2015-06-15",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(variables('vm_web01'),'/joindomain')]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
+            "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_web01'))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "JsonADDomainExtension",
+            "typeHandlerVersion": "1.0",
+            "settings": {
+              "Name": "[parameters('adDomainName')]",
+              "User": "[concat(parameters('adDomainName'), '\\', parameters('adminUsername'))]",
+              "Restart": "true",
+              "Options": 3
+            },
+            "protectedsettings": {
+              "Password": "[parameters('adminPassword')]"
+            }
+          }
+        }
       ],
       "properties": {
         "availabilitySet": {
@@ -714,10 +663,37 @@
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('avSets_sql'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_sql01'))]",
         "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql01nic01'))]",
         "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql01nic02'))]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2015-06-15",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(variables('vm_sql01'),'/joindomain')]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
+            "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "JsonADDomainExtension",
+            "typeHandlerVersion": "1.0",
+            "settings": {
+              "Name": "[parameters('adDomainName')]",
+              "User": "[concat(parameters('adDomainName'), '\\', parameters('adminUsername'))]",
+              "Restart": "true",
+              "Options": 3
+            },
+            "protectedsettings": {
+              "Password": "[parameters('adminPassword')]"
+            }
+          }
+        }
       ],
       "properties": {
         "availabilitySet": {
@@ -844,10 +820,37 @@
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('avSets_sql'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccounts_sql02'))]",
         "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql02nic01'))]",
         "[resourceId('Microsoft.Network/networkInterfaces', variables('nic_sql02nic02'))]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2015-06-15",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(variables('vm_sql02'),'/joindomain')]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
+            "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql02'))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "JsonADDomainExtension",
+            "typeHandlerVersion": "1.0",
+            "settings": {
+              "Name": "[parameters('adDomainName')]",
+              "User": "[concat(parameters('adDomainName'), '\\', parameters('adminUsername'))]",
+              "Restart": "true",
+              "Options": 3
+            },
+            "protectedsettings": {
+              "Password": "[parameters('adminPassword')]"
+            }
+          }
+        }
       ],
       "properties": {
         "availabilitySet": {
@@ -969,199 +972,165 @@
       }
     },
     {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vm_dc01'),'/ForestSetup')]",
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2015-06-15",
+      "name": "[variables('ilbName')]",
+      "type": "Microsoft.Network/loadBalancers",
       "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnet_name'))]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "sql-lb-fe",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "172.16.1.10",
+              "subnet": {
+                "id": "[concat(variables('vnetID'),'/subnets/db-subnet' )]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "sql-lb-be"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "sql-listener",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('ilbName')), '/frontendIpConfigurations/sql-lb-fe')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('ilbName')), '/backendAddressPools/sql-lb-be')]"
+              },
+              "probe": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('ilbName')), '/probes/sql-probe')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 1433,
+              "backendPort": 1433,
+              "enableFloatingIP": true
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "sql-probe",
+            "properties": {
+              "protocol": "tcp",
+              "port": 59999,
+              "intervalInSeconds": "5",
+              "numberOfProbes": "2"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateADPDC",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_dc01'))]"
       ],
       "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "2.3",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "ModulesUrl": "[variables('adModulesURL')]",
-          "ConfigurationFunction": "[variables('adConfigurationFunction')]",
-          "Properties": {
-            "DomainName": "[parameters('AdDomainName')]",
-            "sharePath": "SqlFsw",
-            "AdminCreds": {
-              "UserName": "[parameters('adminUsername')]",
-              "Password": "PrivateSettingsRef:adminPassword"
-            }
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('CreateADPDCTemplateURL')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "adDomainName": {
+            "value": "[parameters('adDomainName')]"
+          },
+          "sharePath": {
+            "value": "SqlFsw"
+          },
+          "vm_name": {
+            "value": "[variables('vm_dc01')]"
           }
-        },
-        "protectedSettings": {
-          "Items": {
-            "adminPassword": "[parameters('adminPassword')]"
-          }
         }
       }
     },
     {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vm_web01'),'/joindomain')]",
-      "location": "[resourceGroup().location]",
+      "name": "CreateCluster-Step1",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_web01'))]",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vm_dc01'),'ForestSetup' )]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "JsonADDomainExtension",
-        "typeHandlerVersion": "1.0",
-        "settings": {
-          "Name": "[parameters('adDomainName')]",
-          "User": "[concat(parameters('adDomainName'), '\\', parameters('adminUsername'))]",
-          "Restart": "true",
-          "Options": 3
-        },
-        "protectedsettings": {
-          "Password": "[parameters('adminPassword')]"
-        }
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vm_sql01'),'/joindomain')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql01'))]",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vm_dc01'),'ForestSetup' )]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "JsonADDomainExtension",
-        "typeHandlerVersion": "1.0",
-        "settings": {
-          "Name": "[parameters('adDomainName')]",
-          "User": "[concat(parameters('adDomainName'), '\\', parameters('adminUsername'))]",
-          "Restart": "true",
-          "Options": 3
-        },
-        "protectedsettings": {
-          "Password": "[parameters('adminPassword')]"
-        }
-      }
-    },
-
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vm_sql02'),'/joindomain')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/VirtualMachines', variables('vm_sql02'))]",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vm_dc01'),'ForestSetup' )]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "JsonADDomainExtension",
-        "typeHandlerVersion": "1.0",
-        "settings": {
-          "Name": "[parameters('adDomainName')]",
-          "User": "[concat(parameters('adDomainName'), '\\', parameters('adminUsername'))]",
-          "Restart": "true",
-          "Options": 3
-        },
-        "protectedsettings": {
-          "Password": "[parameters('adminPassword')]"
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vm_sql01'),'/ClusterSetupNode01')]",
-      "apiVersion": "2015-05-01-preview",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
+        "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vm_sql01'),'joindomain' )]"
       ],
       "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "2.13",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "wmfVersion": "4.0",
-          "modulesUrl": "[variables('sqlAOPrepareModulesURL')]",
-          "configurationFunction": "[variables('sqlAOPrepareConfigurationFunction')]",
-          "properties": {
-            "domainName": "[parameters('adDomainName')]",
-            "sqlAlwaysOnEndpointName": "[concat(parameters('resourcesPrefix'),'-hadr')]",
-            "adminCreds": {
-              "userName": "[parameters('adminUserName')]",
-              "password": "PrivateSettingsRef:adminPassword"
-            },
-            "sqlServiceCreds": {
-              "userName": "[parameters('sqlServiceUserName')]",
-              "password": "PrivateSettingsRef:sqlServerServiceAccountPassword"
-            }
-          }
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('CreateFailOverCluster-Step1')]",
+          "contentVersion": "1.0.0.0"
         },
-        "protectedSettings": {
-          "items": {
-            "adminPassword": "[parameters('adminPassword')]",
-            "sqlServerServiceAccountPassword": "[parameters('sqlServicePassword')]"
+        "parameters": {
+          "resourcesPrefix": {
+            "value": "[parameters('resourcesPrefix')]"
+          },
+          "adDomainName": {
+            "value": "[parameters('adDomainName')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "sqlServiceUsername": {
+            "value": "[parameters('sqlServiceUsername')]"
+          },
+          "sqlServicePassword": {
+            "value": "[parameters('sqlServicePassword')]"
           }
         }
       }
     },
     {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vm_sql02'),'/ClusterSetupNode02')]",
-      "apiVersion": "2015-05-01-preview",
-      "location": "[resourceGroup().location]",
+      "name": "CreateCluster-Step2",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vm_sql02'),'joindomain' )]",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vm_sql01'),'ClusterSetupNode01' )]"
+        "[resourceId('Microsoft.Resources/Deployments','CreateADPDC')]",
+        "[resourceId('Microsoft.Resources/Deployments','CreateCluster-Step1')]",
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vm_sql02'),'joindomain' )]"
       ],
-
       "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "2.13",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "wmfVersion": "4.0",
-          "modulesUrl": "[variables('CreateFailOverClusterModulesURL')]",
-          "configurationFunction": "[variables('CreateFCConfigurationFunction')]",
-          "properties": {
-            "domainName": "[parameters('adDomainName')]",
-            "ClusterName": "[variables('clusterName')]",
-            "SharePath": "[concat('\\\\',variables('vm_dc01'),'\\sqlfsw')]",
-            "Nodes": [
-              "[variables('vm_sql02')]",
-              "[variables('vm_sql01')]"
-            ],
-            "sqlAlwaysOnAvailabilityGroupListenerPort": 1433,
-            "SqlAlwaysOnEndpointName": "[variables('sqlAlwaysOnEndpointName')]",
-            "SqlAlwaysOnAvailabilityGroupName": "[variables('sqlAlwaysOnAvailabilityGroupName')]",
-            "SqlAlwaysOnAvailabilityGroupListenerName": "[variables('sqlAlwaysOnAvailabilityGroupListenerName')]",
-            "LBName": "[variables('lbName')]",
-            "LBAddress": "[variables('lbAddress')]",
-            "PrimaryReplica": "[variables('primaryReplica')]",
-            "SecondaryReplica": "[variables('secondaryReplica')]",
-            "DatabaseNames": "[variables('databaseNames')]",
-            "DNSServerName": "[variables('dnsServerName')]",
-            "adminCreds": {
-              "userName": "[parameters('adminUserName')]",
-              "password": "PrivateSettingsRef:adminPassword"
-            },
-            "sQLServiceCreds": {
-              "userName": "[parameters('sqlServiceUserName')]",
-              "password": "PrivateSettingsRef:sqlServicePassword"
-            }
-          }
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('CreateFailOverCluster-Step2')]",
+          "contentVersion": "1.0.0.0"
         },
-        "protectedSettings": {
-          "items": {
-            "adminPassword": "[parameters('adminPassword')]",
-            "sqlServicePassword": "[parameters('sqlServicePassword')]"
+        "parameters": {
+          "resourcesPrefix": {
+            "value": "[parameters('resourcesPrefix')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "sqlServiceUsername": {
+            "value": "[parameters('sqlServiceUsername')]"
+          },
+          "sqlServicePassword": {
+            "value": "[parameters('sqlServicePassword')]"
+          },
+          "adDomainName": {
+            "value": "[parameters('adDomainName')]"
           }
         }
       }
